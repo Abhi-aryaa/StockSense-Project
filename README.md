@@ -121,14 +121,12 @@ Explored (`weather_condition` vs. sales) but found inconclusive for actionable d
 
 Two-page Power BI report:
 
-**Page 1 — Executive Overview**
+**Executive Overview and Trends**
 - KPI cards: Forecast Accuracy %, % Critical Stock, Avg Turnover, Total Stores, Total SKUs
 - Inventory health & forecast status breakdown (donut charts)
 - Top-10 highest-risk SKUs table
 - Dynamic, slicer-responsive "Key Insights" summary text
 - `product_id` / `store_id` slicers (synced across both pages)
-
-**Page 2 — Trends**
 - Turnover ratio trend (monthly)
 - Inventory health trend (monthly, stacked)
 - Forecast status trend (monthly)
@@ -158,7 +156,6 @@ StockSense-Project/
 │   └── 13_forecast_analysis.sql
 ├── Power_BI/
 │   └── StockSense_Dashboard.pbix
-├── Dashboard_Screenshots/
 │   ├── page1_overview.png
 │   └── page2_trends.png
 ├── Exported_CSVs/
