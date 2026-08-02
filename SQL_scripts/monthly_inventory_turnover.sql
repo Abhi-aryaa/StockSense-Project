@@ -63,3 +63,4 @@ FROM (
 select * from monthly_inventory_turnover
 where movement = 'Slow Moving';
 
+

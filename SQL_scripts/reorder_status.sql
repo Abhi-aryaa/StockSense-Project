@@ -34,3 +34,5 @@ SELECT
     MAX(days_of_supply),
     AVG(days_of_supply)
 FROM low_inventory_flags;
+
+select * from low_inventory_flags;
