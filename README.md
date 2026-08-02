@@ -48,13 +48,6 @@ The mission: design a SQL-driven inventory monitoring and optimization solution 
 Base reference table (`inventory_snapshot`) holding `date, store_id, product_id, inventory_level, units_sold, units_ordered` for every day — the foundation for all downstream stock-level queries.
 
 ### 4.3 Rolling 30-Day Demand Average
-```sql
-AVG(units_sold) OVER (
-    PARTITION BY store_id, product_id
-    ORDER BY date
-    ROWS BETWEEN 29 PRECEDING AND CURRENT ROW
-) AS avg_last_30_days
-```
 Calculates each row's trailing 30-day average demand per store-product combination, correctly handling partial windows early in a product's history.
 
 ### 4.4 Days of Supply
@@ -65,9 +58,6 @@ A daily, per-row estimate of how many days of stock remain at the recent selling
 
 ### 4.5 Inventory Health Classification (Reorder Status)
 Rows classified via threshold bands on `days_of_supply`:
-- **Critical:** < 2 days
-- **Reorder Soon:** < 4 days
-- **Healthy:** otherwise
 
 ### 4.6 Stockout Risk
 Same `days_of_supply` metric, re-banded into High / Medium / Low risk tiers — a severity lens distinct from the health classification above.
@@ -82,9 +72,6 @@ turnover_ratio = SUM(units_sold) ÷ AVG(inventory_level)
 Calculated per month, store, and product — measuring how efficiently stock moves.
 
 ### 4.9 Movement Classification (Fast / Medium / Slow)
-```sql
-NTILE(3) OVER (PARTITION BY month ORDER BY turnover_ratio)
-```
 Products are split into three tiers *within each month*, so "fast-moving" is always relative to that month's distribution rather than a fixed global cutoff.
 
 ### 4.10 Category / Product / Store Performance Rollups
@@ -141,23 +128,22 @@ Data model uses a star schema (`Store` and `Product` lookup tables as hubs) to s
 ```
 StockSense-Project/
 ├── SQL_Scripts/
-│   ├── 01_data_cleaning.sql
-│   ├── 02_inventory_snapshot.sql
-│   ├── 03_avg_sales_30_days.sql
-│   ├── 04_reorder_status.sql
-│   ├── 05_stockout_risk.sql
-│   ├── 06_overstock.sql
-│   ├── 07_monthly_inventory_turnover.sql
-│   ├── 08_category_performance.sql
-│   ├── 09_product_performance.sql
-│   ├── 10_store_performance.sql
-│   ├── 11_discount_analysis.sql
-│   ├── 12_holiday_analysis.sql
-│   └── 13_forecast_analysis.sql
+│   ├── data_cleaning.sql
+│   ├── inventory_snapshot.sql
+│   ├── avg_sales_30_days.sql
+│   ├── reorder_status.sql
+│   ├── stockout_risk.sql
+│   ├── overstock.sql
+│   ├── monthly_inventory_turnover.sql
+│   ├── category_performance.sql
+│   ├── product_performance.sql
+│   ├── store_performance.sql
+│   ├── discount_analysis.sql
+│   ├── holiday_analysis.sql
+│   └── forecast_analysis.sql
 ├── Power_BI/
-│   └── StockSense_Dashboard.pbix
-│   ├── page1_overview.png
-│   └── page2_trends.png
+│   └── Stocksense_inventory_optimization_dashboard.pbix
+│   └── Stocksense_inventory_optimization_dashboard.pdf
 ├── Exported_CSVs/
 └── README.md
 ```
@@ -181,8 +167,3 @@ StockSense-Project/
 - **`price` and `competitor_pricing` are not yet analyzed.** A natural next step is a competitive pricing study — e.g., calculating `price − competitor_pricing` to see whether being priced above/below competitors correlates with `units_sold`, and whether that relationship changes during `holiday_promotion` periods or across `discount` bands. This would extend the demand-driver analysis already done for discounts and promotions to a genuinely unexplored dimension of the dataset.
 
 ---
-
-## 10. Author
-
-**[Your Name]** — B.Tech, IIT Guwahati
-Consulting & Analytics Club — Summer Analytics 2025
